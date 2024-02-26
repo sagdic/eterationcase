@@ -9,64 +9,62 @@ import SwiftUI
 
 struct CarCard: View {
     let car: Car
-    let action: () -> Void
+    let addToCartAction: () -> Void
+    let favAction: () -> Void
+    var isStarFilled: Bool = false
     @StateObject private var imageLoader = ImageLoader()
     
     var body: some View {
-        VStack(alignment: .leading) {
-            if let uiImage = imageLoader.image {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: .infinity, maxHeight: 200)
-                    .cornerRadius(10)
-            } else {
-                ProgressView()
+        GeometryReader { geometry in
+            VStack(alignment: .leading) {
+                ZStack(alignment: .topTrailing) {
+                                if let uiImage = imageLoader.image {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .frame(width: (geometry.size.width - 32), height: (geometry.size.height * 0.50 - 32))
+                                } else {
+                                    ProgressView()
+                                }
+                                
+                                Button(action: favAction) {
+                                    ZStack{
+                                        Image(systemName: "star.fill")
+                                            .foregroundColor(.gray)
+                                        Image(systemName: isStarFilled ? "star.fill" : "star")
+                                            .foregroundColor(.yellow)
+                                    }
+                                }
+                                .padding(.trailing, 8)
+                                .padding(.top, 8)
+                            }
+                Text("\(car.price ?? "")₺")
+                    .font(.headline)
+                    .padding(.vertical, 4).foregroundStyle(.accent)
+                Spacer()
+                Text(car.name ?? "")
+                    .foregroundStyle(.black)
+                Text(car.model ?? "")
+                    .foregroundStyle(.black)
+                
+                Spacer()
+                
+                Button(action: addToCartAction) {
+                    Text("Add to Cart")
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.accentColor)
+                        .cornerRadius(5)
+                }
+            }.onAppear{
+                if let image = car.image {
+                    imageLoader.loadImage(from: image)
+                }
             }
-            Text("\(car.price ?? "")₺")
-                .font(.headline)
-                .padding(.vertical, 4)
-            
-            Text(car.name ?? "")
-                .font(.subheadline)
-                .padding(.vertical, 4)
-            
-            Text(car.model ?? "")
-                .font(.subheadline)
-                .padding(.vertical, 4)
-            
-            Spacer()
-            
-            Button(action: action) {
-                Text("Add to Cart")
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.blue)
-                    .cornerRadius(10)
-            }
-        }.onAppear{
-            if let image = car.image {
-                imageLoader.loadImage(from: image)
-            }
+            .padding(16)
+            .background(Color.white)
+            .cornerRadius(10)
+            .shadow(radius: 5)
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(radius: 5)
-    }
-}
-
-class ImageLoader: ObservableObject {
-    @Published var image: UIImage?
-    
-    func loadImage(from urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else { return }
-            DispatchQueue.main.async {
-                self.image = UIImage(data: data)
-            }
-        }.resume()
     }
 }

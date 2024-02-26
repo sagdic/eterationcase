@@ -7,12 +7,27 @@
 
 import SwiftUI
 
-struct NavigationBackButton: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+struct NavigationBackButton: ViewModifier {
 
-#Preview {
-    NavigationBackButton()
+    @Environment(\.presentationMode) var presentationMode
+    var color: UIColor
+    var text: String?
+
+    func body(content: Content) -> some View {
+        return content
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(
+                leading: Button(action: {  presentationMode.wrappedValue.dismiss() }, label: {
+                    HStack(spacing: 2) {
+                        Image(systemName: "arrow.backward")
+                            .foregroundColor(Color(color))
+
+                        if let text = text {
+                            Text(text)
+                                .foregroundColor(Color(color))
+                        }
+                    }
+                })
+            )
+    }
 }

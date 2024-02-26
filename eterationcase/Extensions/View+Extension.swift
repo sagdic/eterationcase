@@ -7,12 +7,17 @@
 
 import SwiftUI
 
-struct View_Extension: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+extension View {
+  func navigationBarBackground(_ background: Color = .accentColor) -> some View {
+    return self
+      .modifier(ColoredNavigationBar(background: background))
+  }
+}
+
+extension View {
+    func navigationBackButton(color: UIColor, text: String? = nil) -> some View {
+        modifier(NavigationBackButton(color: color, text: text))
     }
 }
 
-#Preview {
-    View_Extension()
-}
+

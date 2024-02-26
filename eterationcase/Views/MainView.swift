@@ -6,32 +6,29 @@
 //
 
 import SwiftUI
-import CoreData
 
 struct MainView: View {
-
+    @StateObject var carViewModel = CarViewModel()
+    
     var body: some View {
-                TabView {
-                    HomeView()
-                        .tabItem {
-                            Label("Anasayfa", systemImage: "house")
-                        }
-                    CartView()
-                        .tabItem {
-                            Label("Sepet", systemImage: "cart")
-                        }
-                    FavoritesView()
-                        .tabItem {
-                            Label("Favoriler", systemImage: "heart")
-                        }
-                    ProfileView()
-                        .tabItem {
-                            Label("Profil", systemImage: "person")
-                        }
+        TabView {
+            HomeView(viewModel: carViewModel)
+                .tabItem {
+                    Label("Anasayfa", systemImage: "house")
                 }
-                .onAppear {
-                    //productViewModel.fetchProducts()
+            CartView(viewModel: carViewModel)
+                .tabItem {
+                    Label("Sepet", systemImage: "cart")
+                        
+                }.badge(carViewModel.totalCartItems > 0 ? "\(carViewModel.totalCartItems)" : nil )
+            FavoritesView(viewModel: carViewModel)
+                .tabItem {
+                    Label("Favoriler", systemImage: "heart")
                 }
-            }
+            ProfileView()
+                .tabItem {
+                    Label("Profil", systemImage: "person")
+                }
+        }
+    }
 }
-

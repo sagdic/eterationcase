@@ -7,12 +7,16 @@
 
 import SwiftUI
 
-struct ColoredNavigationBar: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
-
-#Preview {
-    ColoredNavigationBar()
+struct ColoredNavigationBar: ViewModifier {
+  var background: Color
+  
+  func body(content: Content) -> some View {
+    content
+      .toolbarBackground(
+        background,
+        for: .navigationBar
+      )
+          .navigationBarTitleDisplayMode(.inline)
+      .toolbarBackground(.visible, for: .navigationBar)
+  }
 }

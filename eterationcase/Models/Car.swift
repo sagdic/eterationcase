@@ -15,7 +15,6 @@ struct Car: Codable, Identifiable, Hashable {
     var description: String?
     var model: String?
     var brand: String?
-    var quantity: Int
 }
 
 

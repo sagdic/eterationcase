@@ -9,28 +9,42 @@ import XCTest
 @testable import eterationcase
 
 final class eterationcaseTests: XCTestCase {
-
+    var viewModel: CarViewModel!
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        viewModel = CarViewModel()
     }
-
+    
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        viewModel = nil
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    
+    func testAddToCart() throws {
+        // Given
+        let initialCartItemCount = viewModel.cartItems.count
+        let carName = "Test Car"
+        let carPrice = "100"
+        let quantity: Int16 = 1
+        
+        // When
+        viewModel.addToCart(name: carName, price: carPrice, quantity: quantity)
+        
+        // Then
+        XCTAssertEqual(viewModel.cartItems.count, initialCartItemCount + 1)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testRemoveFromCart() throws {
+        // Given
+        let carName = "Test Car"
+        let carPrice = "100"
+        let quantity: Int16 = 1
+        viewModel.addToCart(name: carName, price: carPrice, quantity: quantity)
+        
+        // When
+        let initialCartItemCount = viewModel.cartItems.count
+        viewModel.removeFromCart(cartItem: viewModel.cartItems.first!)
+        
+        // Then
+        XCTAssertEqual(viewModel.cartItems.count, initialCartItemCount - 1)
     }
-
 }
